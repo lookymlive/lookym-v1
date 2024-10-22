@@ -1,8 +1,8 @@
 import { FC } from "react";
-import VerificationTokenModel from "../models/verificationToken";
+import VerificationTokenModel from "@/app/models/verificationToken";
 import UserModel from "../models/user";
 import { notFound } from "next/navigation";
-import VerificationSuccess from "../components/VerificationSuccess";
+import VerificationSuccess from "@/app/components/VerificationSuccess";
 
 interface Props {
   searchParams: {

@@ -1,9 +1,9 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import { signInSchema } from "./app/utils/verificationSchema";
+import { signInSchema } from "@/app/utils/verificationSchema";
 import UserModel, { createNewUser } from "./app/models/user";
-import startDb from "./app/lib/db";
+import startDb from "@/app/lib/db";
 import { isValidObjectId } from "mongoose";
 
 // Definición de la interfaz del perfil de usuario en la sesión

@@ -12,7 +12,7 @@ const Home: FC<Props> = async () => {
       Welcome to Lookym App
     </h1>
     <p className="text-xl">
-      This is a simple authentication app built with Next.js and NextAuth.js. It demonstrates how to implement a basic authentication flow with email verification and password reset.
+      This is a s. It demonstrates how to implement a basic authentication flow with email verification and password reset.
     </p> 
     
     

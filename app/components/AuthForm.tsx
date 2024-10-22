@@ -1,7 +1,7 @@
 import { FC, FormHTMLAttributes, ReactNode } from "react";
 import AuthSubmitButton from "./AuthSubmitButton";
 import Link from "next/link";
-import { continueWithGoogle } from "../actions/auth";
+import { continueWithGoogle } from "@/app/actions/auth";
 
 interface Props {
   action?: FormHTMLAttributes<HTMLFormElement>["action"];

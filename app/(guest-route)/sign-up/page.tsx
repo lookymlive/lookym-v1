@@ -1,6 +1,6 @@
 "use client";
 
-import { auth } from "@/auth";
+
 import { FC } from "react";
 import { Input } from "@nextui-org/react";
 import AuthForm from "@/app/components/AuthForm";

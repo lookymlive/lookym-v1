@@ -7,6 +7,7 @@ const buttonStyles = {
   base: "flex items-center justify-center w-full text-center p-2 cursor-pointer rounded-small",
   disabled: "opacity-50",
   enabled: "opacity-100",
+  
 };
 
 interface Props {
