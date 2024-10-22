@@ -22,11 +22,19 @@ const UpdatePassword: FC<Props> = async ({ searchParams }) => {
     // Buscar el token en la base de datos
     const resetToken = await PassResetTokenModel.findOne({ userId });
 
+    // Verificar si el token existe y es válido
+    if (!resetToken) {
+      throw new Error("Token not found or expired");
+    }
+
     // Verificar si el token es válido
-    if (!resetToken?.compare(token)) {
-      throw new Error("Token inválido");
+    const isTokenValid = resetToken.compare(token); // compare method to validate token
+
+    if (!isTokenValid) {
+      throw new Error("Invalid token");
     }
   } catch (error) {
+    console.error("Error validating reset token:", error);
     // Si hay un error o el token es inválido, mostrar página 404
     return notFound();
   }
@@ -36,4 +44,3 @@ const UpdatePassword: FC<Props> = async ({ searchParams }) => {
 };
 
 export default UpdatePassword;
-

@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Input } from "@nextui-org/react";
 import AuthForm from "@/app/components/AuthForm";
 import { useFormState } from "react-dom";
@@ -9,6 +9,28 @@ interface Props {}
 
 const SignIn: FC<Props> = () => {
   const [state, signInAction] = useFormState(continueWithCredentials, {});
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleValidation = () => {
+    if (!email || !password) {
+      setError("Email and password are required");
+      return false;
+    }
+    setError(""); // Clear error message if validation passes
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (handleValidation()) {
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
+
+      signInAction(formData); // Pass FormData to signInAction
+    }
+  };
 
   return (
     <AuthForm
@@ -22,10 +44,24 @@ const SignIn: FC<Props> = () => {
       ]}
       btnLabel="Sign In"
       title="Log In"
-      action={signInAction}
+      action={handleSubmit} // This will now be a valid submit handler
+      error={error} // Display error message in AuthForm
     >
-      <Input placeholder="lookym@gmail.com" name="email" />
-      <Input placeholder="********" type="password" name="password" />
+      <Input 
+        placeholder="lookym@gmail.com" 
+        name="email" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        aria-label="Email"
+      />
+      <Input
+        placeholder="********"
+        type="password"
+        name="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        aria-label="Password"
+      />
     </AuthForm>
   );
 };

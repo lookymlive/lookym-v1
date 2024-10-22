@@ -15,8 +15,8 @@ import { redirect } from "next/navigation";
 import mail from "@/app/utils/mail";
 import streamifier from "streamifier";
 import cloud from "../lib/cloud";
-import { uploadFileToCloud } from "../utils/fileHandler";
-import PassResetTokenModel from "../models/passwordResetToken";
+import { uploadFileToCloud } from "@/app/utils/fileHandler";
+import PassResetTokenModel from "@/app/models/passwordResetToken";
 
 export const continueWithGoogle = async () => {
   await signIn("google", { redirectTo: "/" });
@@ -145,34 +145,29 @@ export const updateProfileInfo = async (data: FormData) => {
 
   const userInfo: { name?: string; avatar?: { id: string; url: string } } = {};
 
+  // Validar y actualizar el nombre
   const name = data.get("name");
-  const avatar = data.get("avatar");
   if (typeof name === "string" && name.trim().length >= 3) {
     userInfo.name = name;
   }
 
+  // Validar y subir el avatar si existe
+  const avatar = data.get("avatar");
   if (avatar instanceof File && avatar.type.startsWith("image")) {
     const result = await uploadFileToCloud(avatar);
     if (result) {
       userInfo.avatar = { id: result.public_id, url: result.secure_url };
+    } else {
+      throw new Error("Failed to upload avatar.");
     }
-
-    // const arrayBuffer = await avatar.arrayBuffer()
-    // const buffer: Buffer = Buffer.from(arrayBuffer)
-
-    // const stream = cloud.uploader.upload_stream({}, (err, result) => {
-    //   if(err) throw err
-    //   else
-
-    // })
-
-    // streamifier.createReadStream(buffer).pipe(stream)
   }
 
   await startDb();
   await UserModel.findByIdAndUpdate(session.user.id, {
     ...userInfo,
   });
+
+  // Actualizar la sesión después de la modificación del perfil
   await unstable_update({
     user: {
       ...session.user,
@@ -181,6 +176,7 @@ export const updateProfileInfo = async (data: FormData) => {
     },
   });
 };
+
 
 interface ResetPassResponse {
   message?: string;
