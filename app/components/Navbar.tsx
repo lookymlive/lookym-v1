@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FC } from "react";
 import {
   Button,
@@ -6,7 +7,6 @@ import {
   NavbarItem,
   Navbar as NextUINav,
 } from "@nextui-org/react";
-import Link from "next/link";
 import { auth, signOut } from "@/auth";
 
 interface Props {}

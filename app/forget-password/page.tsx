@@ -4,12 +4,12 @@ import { FC } from "react";
 import AuthForm from "../components/AuthForm";
 import { Input } from "@nextui-org/react";
 import { generatePassResetLink } from "../actions/auth";
-import { useFormState } from "react-dom";
+import { useActionState } from "react"; // Cambiado a useActionState
 
 interface Props {}
 
 const ForgetPassword: FC<Props> = () => {
-  const [state, action] = useFormState(generatePassResetLink, {});
+  const [state, action] = useActionState(generatePassResetLink, {}); // Usamos useActionState
 
   return (
     <AuthForm

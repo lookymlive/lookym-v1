@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import VerificationFormSubmit from "./VerificationFormSubmit";
-import { useFormState } from "react-dom";
+import { useActionState } from "react"; // Cambio de useFormState a useActionState
 import { generateVerificationLink } from "../actions/auth";
 
 interface Props {
@@ -13,7 +13,7 @@ const message = "Please check your inbox to verify your email.";
 const errorMessage = "Didn't get the link?";
 
 const VerificationStatus: FC<Props> = ({ visible }) => {
-  const [state, action] = useFormState(generateVerificationLink, {});
+  const [state, action] = useActionState(generateVerificationLink, {}); // Usamos useActionState
 
   if (!visible) return null;
 
@@ -34,3 +34,5 @@ const VerificationStatus: FC<Props> = ({ visible }) => {
 };
 
 export default VerificationStatus;
+
+

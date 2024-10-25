@@ -1,4 +1,4 @@
-import { Model, model, models, ObjectId, Schema } from "mongoose";
+import { CallbackError, Model, model, models, Schema } from "mongoose";
 import { hashSync, compareSync, genSaltSync } from "bcrypt";
 
 interface PassResetTokenDoc {
@@ -22,22 +22,30 @@ const schema = new Schema<PassResetTokenDoc, {}, Methods>({
   },
   expires: {
     type: Date,
-    default: Date.now(),
-    expires: 60 * 60,
+    default: () => new Date(Date.now() + 60 * 60 * 1000), // 1 hora desde la creación
   },
 });
 
-schema.pre("save", function () {
+schema.pre("save", function (next: (err?: CallbackError) => void) {
   if (this.isModified("token")) {
-    const salt = genSaltSync(10);
-    this.token = hashSync(this.token, salt);
+    try {
+      const salt = genSaltSync(10);
+      this.token = hashSync(this.token, salt);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return next(error);
+      } else {
+        return next(new Error("An unknown error occurred"));
+      }
+    }
   }
+  next();
 });
 
-schema.methods.compare = function (token) {
+schema.methods.compare = function (token: string): boolean {
   return compareSync(token, this.token);
 };
 
-const PassResetTokenModel =
-  models.PassResetToken || model("PassResetToken", schema);
-export default PassResetTokenModel as Model<PassResetTokenDoc, {}, Methods>;
+const PassResetTokenModel = models.PassResetToken || model<PassResetTokenDoc, Model<PassResetTokenDoc, {}, Methods>>("PassResetToken", schema);
+
+export default PassResetTokenModel;

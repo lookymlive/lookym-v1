@@ -31,7 +31,7 @@ const SignUp: FC<Props> = () => {
       formData.append("email", email);
       formData.append("password", password);
 
-      signUpAction(formData); // Trigger sign-up action with form data
+      signUpAction(formData,); // Trigger sign-up action with form data
     }
   };
 

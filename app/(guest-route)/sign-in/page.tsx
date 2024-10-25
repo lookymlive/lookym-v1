@@ -2,13 +2,13 @@
 import { FC, useState } from "react";
 import { Input } from "@nextui-org/react";
 import AuthForm from "@/app/components/AuthForm";
-import { useFormState } from "react-dom";
+import { useActionState } from 'react';
 import { continueWithCredentials } from "@/app/actions/auth";
 
 interface Props {}
 
 const SignIn: FC<Props> = () => {
-  const [state, signInAction] = useFormState(continueWithCredentials, {});
+  const [state, signInAction] = useActionState(continueWithCredentials, {});
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

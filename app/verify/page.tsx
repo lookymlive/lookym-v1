@@ -1,9 +1,8 @@
-import { FC } from "react";
 import VerificationTokenModel from "@/app/models/verificationToken";
 import UserModel from "@/app/models/user";
 import { notFound } from "next/navigation";
 import VerificationSuccess from "@/app/components/VerificationSuccess";
-import { useState } from "react";
+import { FC } from "react";
 
 interface Props {
   searchParams: {
@@ -14,26 +13,29 @@ interface Props {
 
 const Verify: FC<Props> = async ({ searchParams }) => {
   const { token, userId } = searchParams;
-  const [message, setMessage] = useState("");
 
   try {
+    // Buscar el token de verificación en la base de datos
     const verificationToken = await VerificationTokenModel.findOne({ userId });
+    
+    // Verificar si el token es válido
     if (verificationToken?.compare(token)) {
-      // token is verified correctly
+      // Token verificado correctamente: actualizar el usuario como verificado
       await UserModel.findByIdAndUpdate(userId, { verified: true });
+      
+      // Eliminar el token de la base de datos
       await VerificationTokenModel.findByIdAndDelete(verificationToken._id);
-      setMessage(""); // ocultar el mensaje después de verificar el correo electrónico
     } else {
-      // token is mismatched or something wrong happened
-      setMessage("Didn't get the link? Click Here");
-      throw new Error();
+      // Si el token no es válido, lanzar un error
+      throw new Error("Invalid token");
     }
   } catch (error) {
-    setMessage("Didn't get the link? Click Here");
+    // Si hay un error o el token es inválido, devolver página 404
     return notFound();
   }
 
-  return <VerificationSuccess message={message} />;
+  // Si todo es correcto, mostrar mensaje de verificación exitosa
+  return <VerificationSuccess message="Your email has been verified successfully!" />;
 };
 
 export default Verify;

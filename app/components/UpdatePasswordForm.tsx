@@ -1,58 +1,48 @@
- "use client";
+"use client";
 
-// Importamos las dependencias necesarias
 import { Input } from "@nextui-org/react";
 import { FC, useState } from "react";
-import { useFormState } from "react-dom";
-import { updatePassword } from "../actions/auth";
-import AuthSubmitButton from "./AuthSubmitButton";
+import { updatePassword } from "@/app/actions/auth";
+import AuthSubmitButton from "@/app/components/AuthSubmitButton";
 
-// Definimos la interfaz para los props del componente
 interface Props {
-  // Token de autenticación
   token: string;
-  // ID del usuario
   userId: string;
 }
 
-// Definimos el componente UpdatePasswordForm
 const UpdatePasswordForm: FC<Props> = ({ userId, token }) => {
-  // Estado para almacenar la contraseña
   const [password, setPassword] = useState("");
-  // Estado para almacenar la confirmación de la contraseña
   const [confirmPassword, setConfirmPassword] = useState("");
-  // Estado para almacenar el error de coincidencia de contraseñas
   const [passwordMatchError, setPasswordMatchError] = useState(false);
-  // Estado para almacenar el resultado de la acción de actualizar contraseña
-  const [state, action] = useFormState(updatePassword, {});
-  // Desestructuramos el estado para obtener el error y el éxito
-  const { error, success } = state;
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Función para manejar la submit del formulario
-  const handleSubmit = (e: React.FormEvent) => {
-    // Evitamos la acción por defecto del formulario
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Comprobamos si las contraseñas coinciden
+
     if (password !== confirmPassword) {
-      // Si no coinciden, mostramos el error
       setPasswordMatchError(true);
       return;
     }
-    // Si coinciden, ocultamos el error
+    
     setPasswordMatchError(false);
-    // Creamos un objeto FormData para enviar los datos
-    const formData = new FormData();
-    // Añadimos los datos al objeto FormData
-    formData.append('one', password);
-    formData.append('two', confirmPassword);
-    formData.append('token', token);
-    formData.append('userId', userId);
+    setLoading(true);
 
-    // Llamamos a la acción de actualizar contraseña con los datos
-    action(formData);
+    try {
+      // Llamamos a la acción de actualizar contraseña con los datos
+      await updatePassword({ password, token, userId });
+      setSuccess(true);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || "Error al actualizar la contraseña");
+      setSuccess(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Renderizamos el componente
   return (
     <div className="space-y-6 max-w-96 mx-auto pt-20 sm:p-0 p-4">
       {success && <p className="text-green-500">Contraseña actualizada con éxito.</p>}
@@ -61,29 +51,27 @@ const UpdatePasswordForm: FC<Props> = ({ userId, token }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <h1 className="text-2xl">Actualizar Contraseña</h1>
-        <input name="token" value={token} hidden />
-        <input name="userId" value={userId} hidden />
+
         <Input
-          name="one"
+          name="password"
           type="password"
           placeholder="********"
-          label="Contraseña"
+          label="Nueva Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <Input
-          name="two"
+          name="confirmPassword"
           type="password"
           placeholder="********"
           label="Confirmar Contraseña"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-        <AuthSubmitButton label="Actualizar Contraseña" />
+        <AuthSubmitButton label="Actualizar Contraseña" loading={loading} />
       </form>
     </div>
   );
 };
 
-// Exportamos el componente
 export default UpdatePasswordForm;

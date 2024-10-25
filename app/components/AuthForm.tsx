@@ -1,8 +1,9 @@
+"use client";
 import { FC, FormHTMLAttributes, ReactNode } from "react";
 import AuthSubmitButton from "./AuthSubmitButton";
 import Link from "next/link";
 import { continueWithGoogle } from "@/app/actions/auth";
-
+import { signIn } from "next-auth/react";
 interface Props {
   action?: FormHTMLAttributes<HTMLFormElement>["action"];
   error?: string;
@@ -41,11 +42,12 @@ const AuthForm: FC<Props> = ({
           or
         </span>
       </div>
-
-      <form action={continueWithGoogle}>
-        <AuthSubmitButton label="Continue With Google" />
-      </form>
-
+      <form>
+  <AuthSubmitButton
+    label="Continue With Google"
+    onClick={() => signIn("google")} // Aquí llamamos al método signIn con el proveedor "google"
+  />
+</form>
       <div className="space-y-2">
         {footerItems?.map((item, index) => {
           return (
