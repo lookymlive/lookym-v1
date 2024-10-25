@@ -1,58 +1,66 @@
+LOOKYM-V1/
 ├── app/
-│   ├── (guest-route)/                    # Rutas accesibles sin autenticación como invitados 
-│   │   └── layout.tsx                    # Diseño de rutas para invitados (como la página de inicio de sesión o registro) 
-│   ├── (private-route)/                  # Rutas protegidas por autenticación y autorización para usuarios y tiendas (admins)
-│   │   ├── admin/                        # Ruta de administración de usuarios y tiendas (admins)
-│   │   │   └── upload/                   # Ruta de subir videos para tiendas/admins 
-│   │   │       └── page.tsx              # Página de carga de videos 
-│   │   ├── edit-profile/                 # Ruta para editar perfil de usuario y tiendas (admins) 
-│   │   │   └── page.tsx                  # Página de edición de perfil de usuario y tiendas (admins)
-│   │   ├── profile/                      # Ruta de perfil de usuario y tiendas (admins)
-│   │   │   └── page.tsx                  # Página de perfil de usuario y tiendas (admins) 
-│   │   └── layout.tsx                    # Layout para usuarios autenticados y administradores
-│   ├── actions/                          # Acciones relacionadas con la autenticación y la base de datos de NextAuth
-│   │   └── auth.ts                       # Acciones relacionadas con la autenticación
-│   ├── api/                              # Rutas de API para NextAuth
-│   │   └── auth/                         # Rutas de autenticación de NextAuthexit
-
-│   │       └── [...nextauth].ts          # Configuración de NextAuth en Next.js 
-├── components/                           # Componentes reutilizables
-│   ├── AuthForm.tsx                      # Formulario de autenticación y registro de usuarios y tiendas (admins)
-│   ├── AuthSubmitButton.tsx              # Botón de envío de formulario de autenticación y registro de usuarios y tiendas (admins)
-│   ├── Navbar.tsx                        # Componente de barra de navegación (logo, links, etc.) de la aplicación 
-│   ├── UpdatePasswordForm.tsx            # Formulario de actualización de contraseña de usuario 
-│   ├── VerificationFormSubmit.tsx        # Formulario de envío de correo de verificación para usuarios y tiendas (admins) 
-│   ├── VerificationLink.tsx              # Link de verificación para usuarios y tiendas (admins) 
-│   ├── VerificationStatus.tsx            # Verificación de correo para usuarios y tiendas (admins)
-│   ├── VerificationSuccess.tsx           # Verificación de correo para usuarios y tiendas (admins)
-├── lib/                                  # Utilidades generales como conexión a DB, almacenamiento, etc.
-│   ├── cloud.ts                          # Configuración de Cloudinary API para subida de archivos a Cloudinary de videos para tiendas/admins
-│   └── db.ts                             # Conexión a la base de datos de MongoDB (Mongoose) 
-├── models/                               # Modelos de la base de datos (usualmente en MongoDB) 
-│   ├── passwordResetToken.ts             # Token de restablecimiento de contraseña de usuario
-│   ├── user.ts                           # Modelos de usuarios y tiendas (admins)
-│   └── verificationToken.ts              # Token de verificación para usuarios y tiendas (admins)
-└── utils/                                # Utilidades reutilizables como helpers, validaciones, etc.
-│   ├── fileHandler.ts                    # Manejo de archivos y subida de archivos a Cloudinary
-│   ├── mail.ts                           
-│   └── verificationSchema.ts             
-├── verify/                               # Página de verificación de correo para usuarios y tiendas (admins)
-│   ├── page.tsx                          
-│   ├── providers.tsx                     
-│   ├── layout.tsx                        
-├── public/                                # Mantiene los recursos públicos como favicon 
-│   ├── favicon.ico                        
-├── styles/                                # Mantener las hojas de estilo
-│   └── globals.css                        
-├── .env                                   # Variables de entorno para configuración
-├── .eslintrc.json                         # Configuración de ESLint
-├── .gitignore                             # Archivos ignorados por Git
-├── auth.ts                                # Archivo de configuración de NextAuth
-├── next-env.d.ts                          # Archivo de configuración de Next.js
-├── next.config.mjs                        # Configuración principal de Next.js
-├── package-lock.json                      # Archivo de bloqueo de paquetes
-├── package.json                           # Archivo de descripción del proyecto 
-├── postcss.config.mjs                     # Configuración de PostCSS
-├── tailwind.config.ts                     # Configuración de Tailwind CSS
-├── tsconfig.json                          # Configuración de TypeScript
-└── README.md                              # Documentación del proyecto 
+│   ├── (guest-route)/           # Rutas públicas para usuarios no autenticados
+│   │   ├── sign-in/            # Inicio de sesión
+│   │   │   ├── page.tsx
+│   │   ├── sign-up/            # Registro de usuario
+│   │   │   ├── page.tsx
+│   │   └── update-password/    # Actualización de contraseña
+│   │       ├── page.tsx
+│   │       └── layout.tsx
+│   │
+│   ├── (private-route)/        # Rutas protegidas para usuarios autenticados
+│   │   ├── edit-profile/       # Edición de perfil
+│   │   │   ├── page.tsx
+│   │   └── profile/            # Visualización de perfil
+│   │       ├── page.tsx
+│   │       └── layout.tsx
+│   │
+│   ├── actions/                # Acciones y lógica de negocio
+│   │   └── auth.ts            # Lógica de autenticación
+│   │
+│   ├── api/auth/              # API endpoints para autenticación
+│   │   └── route.ts           # Rutas de la API
+│   │
+│   ├── components/            # Componentes reutilizables
+│   │   ├── AuthForm.tsx
+│   │   ├── AuthSubmitButton.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── UpdatePasswordForm.tsx
+│   │   ├── VerificationFormSubmit.tsx
+│   │   ├── VerificationStatus.tsx
+│   │   └── VerificationSuccess.tsx
+│   │
+│   ├── lib/                   # Utilidades y bibliotecas
+│   │   ├── cloud.ts           # Funcionalidades relacionadas con la nube
+│   │   ├── db.ts              # Configuración y utilidades de base de datos
+│   │   ├── models/            # Modelos de datos
+│   │   │   ├── passwordResetToken.ts
+│   │   │   ├── user.ts
+│   │   │   └── verificationToken.ts
+│   │   └── utils/             # Utilidades generales
+│   │       ├── fileHandler.ts  # Manejo de archivos
+│   │       ├── mail.ts        # Funcionalidades de correo
+│   │       └── verificationSchema.ts  # Esquemas de verificación
+│   │
+│   ├── verify/                # Verificación de cuenta/email
+│   │   └── page.tsx
+│   │
+├── public/                    # Archivos públicos estáticos
+├── node_modules/              # Dependencias de Node.js
+├── favicon.png                # Ícono del sitio
+├── globals.css               # Estilos globales
+├── layout.tsx                # Layout principal
+├── page.tsx                  # Página principal
+├── providers.tsx             # Proveedores de contexto
+├── .env                      # Variables de entorno
+├── .eslintrc.json           # Configuración de ESLint
+├── .gitignore               # Archivos ignorados por Git
+├── auth.ts                  # Configuración de autenticación
+├── next-env.d.ts            # Tipos para Next.js
+├── next.config.mjs          # Configuración de Next.js
+├── package-lock.json        # Versiones exactas de dependencias
+├── package.json             # Configuración del proyecto y dependencias
+├── postcss.config.mjs       # Configuración de PostCSS
+├── README.md                # Documentación del proyecto
+└── tailwind.config.ts       # Configuración de Tailwind CSS
