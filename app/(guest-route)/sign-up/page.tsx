@@ -3,13 +3,13 @@
 import { FC, useState } from "react";
 import { Input } from "@nextui-org/react";
 import AuthForm from "@/app/components/AuthForm";
-import { signUp } from "@/app/actions/auth";
-import { useFormState } from "react-dom";  // Verifica que useFormState esté bien configurado
+import { continueWithCredentials } from "@/app/actions/auth";
+import { useActionState } from 'react';
 
 interface Props {}
 
 const SignUp: FC<Props> = () => {
-  const [state, signUpAction] = useFormState(signUp, {});
+  const [state, signUnAction] = useActionState(continueWithCredentials,{});
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +31,7 @@ const SignUp: FC<Props> = () => {
       formData.append("email", email);
       formData.append("password", password);
 
-      signUpAction(formData,); // Trigger sign-up action with form data
+      signUnAction(formData,); // Trigger sign-up action with form data
     }
   };
 
