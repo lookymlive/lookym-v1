@@ -1,5 +1,5 @@
 import { CallbackError, Model, model, models, Schema } from "mongoose";
-import { hashSync, compareSync, genSaltSync } from "bcrypt";
+import { hashSync, compareSync, genSaltSync } from "bcryptjs";
 
 interface PassResetTokenDoc {
   token: string;
@@ -26,17 +26,13 @@ const schema = new Schema<PassResetTokenDoc, {}, Methods>({
   },
 });
 
-schema.pre("save", function (next: (err?: CallbackError) => void) {
+schema.pre("save", function (next) {
   if (this.isModified("token")) {
     try {
       const salt = genSaltSync(10);
       this.token = hashSync(this.token, salt);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return next(error);
-      } else {
-        return next(new Error("An unknown error occurred"));
-      }
+    } catch (error) {
+      return next(error as CallbackError);
     }
   }
   next();
@@ -49,3 +45,4 @@ schema.methods.compare = function (token: string): boolean {
 const PassResetTokenModel = models.PassResetToken || model<PassResetTokenDoc, Model<PassResetTokenDoc, {}, Methods>>("PassResetToken", schema);
 
 export default PassResetTokenModel;
+

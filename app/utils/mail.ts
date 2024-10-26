@@ -1,70 +1,68 @@
 import nodemailer from "nodemailer";
 import { MailtrapClient } from "mailtrap";
 
-const TOKEN = process.env.MAILTRAP_TOKEN!;
+const TOKEN = process.env.MAILTRAP_TOKEN;
+const MAIL_USER = process.env.MAILTRAP_USER;
+const MAIL_PASS = process.env.MAILTRAP_PASS;
+const VERIFICATION_MAIL = process.env.VERIFICATION_MAIL;
+
+if (!TOKEN || !MAIL_USER || !MAIL_PASS || !VERIFICATION_MAIL) {
+  throw new Error("Missing environment variables for mail setup.");
+}
 
 const client = new MailtrapClient({ token: TOKEN });
-
-const sender = {
-  email: "lookymlive@gmail.com",
-  name: "Luis Paulo",
-};
 
 const transport = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",
   port: 2525,
   auth: {
-    user: process.env.MAILTRAP_USER,
-    pass: process.env.MAILTRAP_PASS,
-    
+    user: MAIL_USER,
+    pass: MAIL_PASS,
   },
 });
 
 type Options = { to: string; name: string; link: string };
+
 const sendVerificationMail = async (options: Options) => {
-
-  if ( process.env.NODE_ENV === "development" ) {
-    // send the test email to the user
-    await transport.sendMail({
-      to: options.to,
-      from: process.env.VERIFICATION_MAIL,
-      subject: "Welcome Email",
-      html: `<div>
-              <p>Please click on <a href="${options.link}">this link</a></p>
-            
-          </div>`,
-    });
-  } else {
-    // send the real email to the user
-    const recipients = [
-      {
-        email: options.to,
-      },
-    ];
-
-    client
-      .send({
-        from: sender,
-        to: recipients,
+  try {
+    if (process.env.NODE_ENV === "development") {
+      await transport.sendMail({
+        to: options.to,
+        from: VERIFICATION_MAIL,
         subject: "Welcome Email",
         html: `<div>
-              <p>Please click on <a href="${options.link}">this link</a></p>
-          </div>`,
+                 <p>Please click on <a href="${options.link}">this link</a> to verify your account.</p>
+               </div>`,
+      });
+    } else {
+      await client.send({
+        from: { email: VERIFICATION_MAIL, name: "Lookym Support" },
+        to: [{ email: options.to }],
+        subject: "Welcome Email",
+        html: `<div>
+                 <p>Please click on <a href="${options.link}">this link</a> to verify your account.</p>
+               </div>`,
         category: "Integration Test",
-      })
-      .then(console.log, console.error);
+      });
+    }
+  } catch (error) {
+    console.error("Error sending verification email:", error);
   }
 };
 
 const sendPassResetMail = async (options: Options) => {
-  await transport.sendMail({
-    to: options.to,
-    from: process.env.VERIFICATION_MAIL,
-    subject: "Update Password Request",
-    html: `<div>
-            <p>Please click on <a href="${options.link}">this link</a> to update your password.</p>
-        </div>`,
-  });
+  try {
+    await transport.sendMail({
+      to: options.to,
+      from: VERIFICATION_MAIL,
+      subject: "Password Reset Request",
+      html: `<div>
+               <p>Please click on <a href="${options.link}">this link</a> to reset your password.</p>
+             </div>`,
+    });
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+  }
 };
 
 const mail = {

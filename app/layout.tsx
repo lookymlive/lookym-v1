@@ -19,14 +19,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  const showVerification = session && !session.user.verified;
 
   return (
     <html className="dark" lang="en">
       <body className={inter.className}>
         <Providers>
-          <VerificationStatus
-            visible={session && !session?.user.verified ? true : false}
-          />
+          {showVerification && (
+            <VerificationStatus visible={showVerification} />
+          )}
           <Navbar />
           {children}
         </Providers>

@@ -1,5 +1,5 @@
 import { Model, model, models, ObjectId, Schema } from "mongoose";
-import { hashSync, compareSync, genSaltSync } from "bcrypt";
+import { hashSync, compareSync, genSaltSync } from "bcryptjs";
 
 interface BaseUserDoc {
   _id?: ObjectId;
@@ -66,14 +66,19 @@ schema.pre("save", function () {
   }
 });
 
-schema.methods.compare = function (password) {
-  if (this.password) return compareSync(password, this.password);
-  return false;
+schema.methods.compare = function (password: string): boolean {
+  return this.password ? compareSync(password, this.password) : false;
 };
 
 export const createNewUser = async (userInfo: UserDoc) => {
-  return await UserModel.create(userInfo);
+  try {
+    return await UserModel.create(userInfo);
+  } catch (error) {
+    console.error("Error creating user:", (error as Error).message);
+    throw new Error("Failed to create user");
+  }
 };
 
-const UserModel = models.User || model("User", schema);
-export default UserModel as Model<BaseUserDoc, {}, Methods>;
+const UserModel = models.User || model<BaseUserDoc, Model<BaseUserDoc, {}, Methods>>("User", schema);
+export default UserModel;
+
