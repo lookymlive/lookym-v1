@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { FC } from "react";
-import VideoGrid from "@/app/components/VideoGrid";
 import CategoryFilter from "@/app/components/CategoryFilter";
+import VideoGrid from "@/app/components/VideoGrid";
 import UserComments from "@/app/components/UserComments";
 
 interface Props {}
